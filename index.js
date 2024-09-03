@@ -3,7 +3,6 @@ const express = require('express')
 const cors = require('cors')
 const Person = require('./models/persons')
 let morgan = require('morgan')
-const persons = require('./models/persons')
 const app = express()
 
 app.use(express.static('dist'))
@@ -32,7 +31,9 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 app.get('/info', (request, response) => {
-    response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
+    Person.find({}).then(persons => {
+        response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
+    }).catch(error => next(error))
 })
 
 app.delete("/api/persons/:id", (request, response, next) => {
