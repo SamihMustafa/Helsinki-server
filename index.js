@@ -60,8 +60,12 @@ app.get('/info', (request, response) => {
 
 app.delete("/api/persons/:id", (request, response) => {
     const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
-    response.status(204).end()
+    Person.findByIdAndDelete(id).then(() => {
+        response.status(204).end()
+    }).catch(error => {
+        console.log(error)
+        response.status(404).end()
+    })
 })
 
 
@@ -84,6 +88,15 @@ app.post('/api/persons', (request, response) => {
         response.json(person)
     })
   })
+
+
+  const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  }
+
+app.use(unknownEndpoint)
+
+
 
 const PORT = process.env.PORT
 app.listen(PORT)
