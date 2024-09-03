@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const Person = require('./models/persons')
 let morgan = require('morgan')
+const persons = require('./models/persons')
 const app = express()
 
 app.use(express.static('dist'))
@@ -53,6 +54,20 @@ app.post('/api/persons', (request, response) => {
     person.save().then(person => {
         response.json(person)
     }).catch(error => next(error))
+  })
+
+
+  app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+    const person = {
+        name: body.name,
+        number: body.number
+    }
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+      .then(updatedPerson => {
+        response.json(updatedPerson)
+      })
+      .catch(error => next(error))
   })
 
 
