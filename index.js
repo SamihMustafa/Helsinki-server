@@ -75,25 +75,14 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
-    if(!body.name || !body.number){
-        return response.status(400).json({ 
-            error: 'name or number missing' 
-        })
-    }else if(persons.find(person => person.name === body.name)){
-        return response.status(400).json({ 
-            error: 'name must be unique' 
-        })
-    }
-
-    const person = {
+    const person = new Person({
         name: body.name,
-        number: body.number,
-        id: generateId(),
-      }
-    
-    persons = persons.concat(person)
+        number: body.number
+      })
 
-    response.json(person)
+    person.save().then(person => {
+        response.json(person)
+    })
   })
 
 const PORT = process.env.PORT
