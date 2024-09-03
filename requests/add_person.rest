@@ -9,3 +9,14 @@ Content-Type: application/json
 ### TEST
 
 GET http://localhost:3001/api/persons
+
+
+### PROD POST 
+
+POST https://helsinki-server.fly.dev/api/persons
+Content-Type: application/json
+
+{
+    "name": "JohnDoe",
+    "number": "456-123-0001"
+}
