@@ -9,4 +9,6 @@ Content-Type: application/json
   }
 
 
-### 
+### Test Delete - add id to endpoint after creating the blog
+
+DELETE http://localhost:3003/api/blogs/
