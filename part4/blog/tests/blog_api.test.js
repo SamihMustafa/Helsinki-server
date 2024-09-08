@@ -46,7 +46,7 @@ test('POST /api/blogs creates a new blog', async () => {
     title: 'new blog',
     author: 'new author',
     url: 'new url',
-    likes: 0
+    likes: 5
   }
   await api
     .post('/api/blogs')
@@ -59,6 +59,21 @@ test('POST /api/blogs creates a new blog', async () => {
 
   const contents = response.body.map(r => r.title)
   assert.strictEqual(contents.includes(newBlog.title), true)
+})
+
+test('POST /api/blogs defaults likes to 0', async () => {
+  const newBlog = {
+    title: 'new blog',
+    author: 'new author',
+    url: 'new url'
+  }
+  const result = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(result.body.likes, 0)
 })
 
 after(async () => {
