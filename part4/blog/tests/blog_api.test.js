@@ -101,6 +101,14 @@ describe('missing data returns bad request', () => {
   })
 })
 
+test('DELETE /api/blogs deletes a blog', async () => {
+  await api
+    .delete(`/api/blogs/${listWithOneBlog[0]._id}`)
+    .expect(204)
+  const result = await api.get('/api/blogs')
+  assert.strictEqual(result.body.length, 0)
+})
+
 
 after(async () => {
   await mongoose.connection.close()
