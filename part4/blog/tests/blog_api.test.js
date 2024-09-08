@@ -101,6 +101,22 @@ describe('missing data returns bad request', () => {
   })
 })
 
+test('PUT /api/blogs updates a blog', async () => {
+  const newBlog = {
+    title: 'updated blog',
+    author: 'updated author',
+    url: 'updated url',
+    likes: 10
+  }
+  const result = await api
+    .put(`/api/blogs/${listWithOneBlog[0]._id}`)
+    .send(newBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  assert.strictEqual(result.body.title, newBlog.title)
+  assert.strictEqual(result.body.likes, newBlog.likes)
+})
+
 test('DELETE /api/blogs deletes a blog', async () => {
   await api
     .delete(`/api/blogs/${listWithOneBlog[0]._id}`)

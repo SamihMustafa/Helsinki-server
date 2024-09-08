@@ -24,6 +24,18 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(result)
 })
 
+blogsRouter.put('/:id', async (request, response) => {
+  const { title, author, url, likes } = request.body
+  const blog = {
+    title,
+    author,
+    url,
+    likes
+  }
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+  response.json(updatedBlog)
+})
+
 blogsRouter.get('/:id', (request, response, next) => {
   Blog
     .findById(request.params.id)
