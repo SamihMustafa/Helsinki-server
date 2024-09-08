@@ -33,6 +33,14 @@ test('blogs are returned as json', async () => {
   assert.strictEqual(response.body.length, listWithOneBlog.length)
 })
 
+test('unique identifier is named id', async () => {
+  const response = await api.get('/api/blogs')
+  // check no _id is returned
+  assert.strictEqual(response.body[0]._id, undefined)
+  // check id matches the blog id
+  assert.strictEqual(response.body[0].id, listWithOneBlog[0]._id)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
