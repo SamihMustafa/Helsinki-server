@@ -41,6 +41,26 @@ test('unique identifier is named id', async () => {
   assert.strictEqual(response.body[0].id, listWithOneBlog[0]._id)
 })
 
+test('POST /api/blogs creates a new blog', async () => {
+  const newBlog = {
+    title: 'new blog',
+    author: 'new author',
+    url: 'new url',
+    likes: 0
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  assert.strictEqual(response.body.length, listWithOneBlog.length + 1)
+
+  const contents = response.body.map(r => r.title)
+  assert.strictEqual(contents.includes(newBlog.title), true)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
