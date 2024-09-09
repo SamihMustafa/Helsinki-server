@@ -6,3 +6,14 @@ Content-Type: application/json
     "name": "samih",
     "password": "universal"
 }
+
+### Test Failing
+
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "sa",
+    "name": "samih",
+    "password": "universal"
+}
