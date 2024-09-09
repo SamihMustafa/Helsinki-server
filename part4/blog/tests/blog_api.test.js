@@ -4,24 +4,15 @@ const supertest = require('supertest')
 const assert = require('assert')
 const Blog = require('../models/blog')
 const app = require('../app')
+const helper = require('./test_helper')
 
 const api = supertest(app)
 
-const listWithOneBlog = [
-  {
-    _id: '5a422aa71b54a676234d17f8',
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
-    likes: 5,
-    __v: 0
-  }
-]
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let noteObject = new Blog(listWithOneBlog[0])
-  await noteObject.save()
+  let blogObject = new Blog(helper.listWithOneBlog[0])
+  await blogObject.save()
 })
 
 test('blogs are returned as json', async () => {
@@ -30,7 +21,7 @@ test('blogs are returned as json', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-  assert.strictEqual(response.body.length, listWithOneBlog.length)
+  assert.strictEqual(response.body.length, helper.listWithOneBlog.length)
 })
 
 test('unique identifier is named id', async () => {
@@ -38,7 +29,7 @@ test('unique identifier is named id', async () => {
   // check no _id is returned
   assert.strictEqual(response.body[0]._id, undefined)
   // check id matches the blog id
-  assert.strictEqual(response.body[0].id, listWithOneBlog[0]._id)
+  assert.strictEqual(response.body[0].id, helper.listWithOneBlog[0]._id)
 })
 
 test('POST /api/blogs creates a new blog', async () => {
@@ -55,7 +46,7 @@ test('POST /api/blogs creates a new blog', async () => {
     .expect('Content-Type', /application\/json/)
 
   const response = await api.get('/api/blogs')
-  assert.strictEqual(response.body.length, listWithOneBlog.length + 1)
+  assert.strictEqual(response.body.length, helper.listWithOneBlog.length + 1)
 
   const contents = response.body.map(r => r.title)
   assert.strictEqual(contents.includes(newBlog.title), true)
@@ -109,7 +100,7 @@ test('PUT /api/blogs updates a blog', async () => {
     likes: 10
   }
   const result = await api
-    .put(`/api/blogs/${listWithOneBlog[0]._id}`)
+    .put(`/api/blogs/${helper.listWithOneBlog[0]._id}`)
     .send(newBlog)
     .expect(200)
     .expect('Content-Type', /application\/json/)
@@ -119,7 +110,7 @@ test('PUT /api/blogs updates a blog', async () => {
 
 test('DELETE /api/blogs deletes a blog', async () => {
   await api
-    .delete(`/api/blogs/${listWithOneBlog[0]._id}`)
+    .delete(`/api/blogs/${helper.listWithOneBlog[0]._id}`)
     .expect(204)
   const result = await api.get('/api/blogs')
   assert.strictEqual(result.body.length, 0)
