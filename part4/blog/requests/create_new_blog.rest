@@ -1,5 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbSIsImlkIjoiNjZkZjUxZmIzNWMyMzAyZDI4MzdkN2I0IiwiaWF0IjoxNzI1OTc1MDQ2fQ.b9bczBK9Pt8cVf5yYKArFPYudQk2xUi6hA4LaU1HKW4
 
 {
     "title": "My Fouth Blog Post",
