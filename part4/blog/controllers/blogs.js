@@ -1,27 +1,49 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
-blogsRouter.post('/', async (request, response) => {
-  const { title, author, url, likes } = request.body
+blogsRouter.post('/', async (request, response, next) => {
+  try{
 
-  if (!title || !url) {
-    return response.status(400).json({
-      error: 'title and url are required'
+    const { title, author, url, likes } = request.body
+
+    if (!title || !url) {
+      return response.status(400).json({
+        error: 'title and url are required'
+      })
+    }
+
+    const users = (await User.find({}))
+
+    if (!users) {
+      return response.status(400).json({
+        error: 'users not found'
+      })
+    }
+    const randomIndex = Math.floor(Math.random() * users.length) // Get a random index
+    const user = users[randomIndex] // Select the user at that index
+
+    const blog = new Blog({
+      title,
+      author,
+      url,
+      likes: likes || 0,
+      user: user._id
     })
+    const savedBlog = await blog.save()
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
+
+    response.status(201).json(savedBlog)
+
+  } catch (error) {
+    next(error)
   }
-  const blog = new Blog({
-    title,
-    author,
-    url,
-    likes: likes || 0
-  })
-  const result = await blog.save()
-  response.status(201).json(result)
 })
 
 blogsRouter.put('/:id', async (request, response) => {
