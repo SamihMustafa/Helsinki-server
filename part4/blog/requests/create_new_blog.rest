@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbSIsImlkIjoiNjZkZjUxZmIzNWMyMzAyZDI4MzdkN2I0IiwiaWF0IjoxNzI1OTc1MDQ2fQ.b9bczBK9Pt8cVf5yYKArFPYudQk2xUi6hA4LaU1HKW4
+Authorization: Bearer 
 
 {
     "title": "My Fouth Blog Post",
@@ -10,6 +10,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhb
   }
 
 
-### Test Delete - add id to endpoint after creating the blog
+### Test Delete - add id and auth to endpoint after creating the blog
 
 DELETE http://localhost:3003/api/blogs/
