@@ -10,16 +10,28 @@ const helper = require('./test_helper')
 
 const api = supertest(app)
 
+let userToken
+let user
+
 before(async () => {
   await User.deleteMany({})
   const passwordHash = await bcrypt.hash('sekret', 10)
-  const user = new User({ username: 'root', passwordHash })
+  user = new User({ username: 'root', passwordHash })
   await user.save()
+
+  const response = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'sekret' })
+  userToken = response.body.token
+  console.log(userToken)
+  await Blog.deleteMany({})
+
 })
 
 beforeEach(async () => {
   await Blog.deleteMany({})
   let blogObject = new Blog(helper.listWithOneBlog[0])
+  blogObject.user = user
   await blogObject.save()
 })
 
@@ -49,6 +61,7 @@ test('POST /api/blogs creates a new blog', async () => {
   }
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${userToken}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -68,6 +81,7 @@ test('POST /api/blogs defaults likes to 0', async () => {
   }
   const result = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${userToken}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -83,6 +97,7 @@ describe('missing data returns bad request', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${userToken}`)
       .send(newBlog)
       .expect(400)
   })
@@ -95,6 +110,7 @@ describe('missing data returns bad request', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${userToken}`)
       .send(newBlog)
       .expect(400)
   })
@@ -119,6 +135,7 @@ test('PUT /api/blogs updates a blog', async () => {
 test('DELETE /api/blogs deletes a blog', async () => {
   await api
     .delete(`/api/blogs/${helper.listWithOneBlog[0]._id}`)
+    .set('Authorization', `Bearer ${userToken}`)
     .expect(204)
   const result = await api.get('/api/blogs')
   assert.strictEqual(result.body.length, 0)

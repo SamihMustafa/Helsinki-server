@@ -12,4 +12,5 @@ Authorization: Bearer
 
 ### Test Delete - add id and auth to endpoint after creating the blog
 
-DELETE http://localhost:3003/api/blogs/
+DELETE http://localhost:3003/api/blogs/66e07a0fb702979d193f997d
+Authorization: Bearer 
